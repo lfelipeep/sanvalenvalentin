@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💝 San Valentín 💝</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffc3a0 50%, #ff6b9d 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Corazones volando de fondo */
+        .heart {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 105, 180, 0.6);
+            transform: rotate(45deg);
+            animation: float-up linear infinite;
+            z-index: 1;
+        }
+
+        .heart:before,
+        .heart:after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 105, 180, 0.6);
+            border-radius: 50%;
+        }
+
+        .heart:before {
+            top: -10px;
+            left: 0;
+        }
+
+        .heart:after {
+            left: 10px;
+            top: 0;
+        }
+
+        @keyframes float-up {
+            0% {
+                bottom: -50px;
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                bottom: 110vh;
+                opacity: 0;
+            }
+        }
+
+        /* Reproductor de música */
+        .music-player {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 40px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .music-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6b9d, #c94b7a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .music-icon::before {
+            content: "♪";
+            color: white;
+            font-size: 24px;
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .music-title {
+            color: #c94b7a;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Contenedor principal */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Pantalla de fecha */
+        .date-screen {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 60px 80px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .date-screen h1 {
+            color: #c94b7a;
+            font-size: 48px;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .date-input {
+            font-size: 24px;
+            padding: 15px 30px;
+            border: 3px solid #ff6b9d;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            font-family: 'Georgia', serif;
+            color: #c94b7a;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: #c94b7a;
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #ff6b9d, #c94b7a);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+            font-family: 'Georgia', serif;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        /* Animación de flores */
+        .flower-animation {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .flower-animation.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flower-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+
+        .flower {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: bloom 3s ease-out forwards;
+        }
+
+        .petal {
+            position: absolute;
+            width: 120px;
+            height: 180px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0% 100%;
+            opacity: 0;
+            animation: petalBloom 2s ease-out forwards;
+        }
+
+        .petal:nth-child(1) {
+            transform: translate(-50%, -50%) rotate(0deg);
+            animation-delay: 0s;
+        }
+
+        .petal:nth-child(2) {
+            transform: translate(-50%, -50%) rotate(72deg);
+            animation-delay: 0.2s;
+        }
+
+        .petal:nth-child(3) {
+            transform: translate(-50%, -50%) rotate(144deg);
+            animation-delay: 0.4s;
+        }
+
+        .petal:nth-child(4) {
+            transform: translate(-50%, -50%) rotate(216deg);
+            animation-delay: 0.6s;
+        }
+
+        .petal:nth-child(5) {
+            transform: translate(-50%, -50%) rotate(288deg);
+            animation-delay: 0.8s;
+        }
+
+        @keyframes petalBloom {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotate(var(--rotation, 0deg));
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(var(--rotation, 0deg));
+                opacity: 1;
+            }
+        }
+
+        .flower-center {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #ffd700, #ffa500);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: centerBloom 1s ease-out 1s forwards;
+            opacity: 0;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        @keyframes centerBloom {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bloom {
+            0% {
+                transform: scale(0) rotate(0deg);
+            }
+            100% {
+                transform: scale(1) rotate(360deg);
+            }
+        }
+
+        /* Carta de amor */
+        .love-letter {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: #fff;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            max-width: 600px;
+            width: 90%;
+            z-index: 200;
+            animation: letterAppear 1s ease-out 3s forwards;
+        }
+
+        .love-letter.active {
+            display: block;
+        }
+
+        @keyframes letterAppear {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotateY(180deg);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+
+        .letter-header {
+            text-align: center;
+            color: #c94b7a;
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .letter-date {
+            text-align: center;
+            color: #ff6b9d;
+            font-size: 20px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .letter-content {
+            color: #333;
+            font-size: 18px;
+            line-height: 1.8;
+            text-align: justify;
+            white-space: pre-line;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff6b9d;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #c94b7a;
+            transform: rotate(90deg);
+        }
+
+        /* Ocultar pantalla de fecha */
+        .date-screen.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .date-screen {
+                padding: 40px 30px;
+            }
+
+            .date-screen h1 {
+                font-size: 32px;
+            }
+
+            .music-player {
+                padding: 15px 25px;
+            }
+
+            .music-title {
+                font-size: 14px;
+            }
+
+            .love-letter {
+                padding: 30px;
+            }
+
+            .letter-header {
+                font-size: 28px;
+            }
+
+            .letter-content {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Reproductor de música -->
+    <div class="music-player">
+        <div class="music-icon"></div>
+        <div class="music-title">Nuestra Canción ♥</div>
+    </div>
+
+    <!-- Audio de fondo -->
+    <audio id="backgroundMusic" loop autoplay>
+        <!-- COLOCA AQUÍ LA URL DE TU CANCIÓN -->
+        <source src="TU_CANCION_AQUI.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Corazones volando -->
+    <div id="hearts-container"></div>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+        <!-- Pantalla de fecha -->
+        <div class="date-screen" id="dateScreen">
+            <h1>💝 Un Momento Especial 💝</h1>
+            <p style="color: #666; font-size: 20px; margin-bottom: 30px;">
+                Ingresa nuestra fecha especial
+            </p>
+            <input 
+                type="text" 
+                class="date-input" 
+                id="dateInput" 
+                placeholder="14 de Febrero, 2025"
+            >
+            <br>
+            <button class="btn-submit" onclick="showFlowers()">
+                Descubrir mi Sorpresa ♥
+            </button>
+        </div>
+
+        <!-- Animación de flores -->
+        <div class="flower-animation" id="flowerAnimation">
+            <div class="flower-container">
+                <div class="flower">
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="flower-center"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carta de amor -->
+        <div class="love-letter" id="loveLetter">
+            <button class="close-btn" onclick="closeLetter()">×</button>
+            <div class="letter-header">
+                Para ti, mi amor ♥
+            </div>
+            <div class="letter-date" id="letterDate">
+                14 de Febrero, 2025
+            </div>
+            <div class="letter-content">
+<!-- ESCRIBE TU CARTA AQUÍ -->
+Mi amor,
+
+En este día especial quiero decirte que eres la razón de mi felicidad. Cada momento a tu lado es un regalo que atesoro en mi corazón.
+
+Desde el primer día que te vi, supe que eras especial. Tu sonrisa ilumina mis días y tu amor me hace la persona más afortunada del mundo.
+
+Gracias por estar conmigo, por tu paciencia, tu cariño y por hacerme sentir amado/a cada día.
+
+Te amo hoy, mañana y siempre.
+
+Con todo mi corazón,
+[Tu nombre]
+
+<!-- FIN DE LA CARTA -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Crear corazones volando
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const numberOfHearts = 20;
+
+            for (let i = 0; i < numberOfHearts; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                container.appendChild(heart);
+            }
+        }
+
+        // Mostrar animación de flores
+        function showFlowers() {
+            const dateInput = document.getElementById('dateInput').value;
+            
+            if (!dateInput.trim()) {
+                alert('Por favor, ingresa una fecha especial ♥');
+                return;
+            }
+
+            // Actualizar fecha en la carta
+            document.getElementById('letterDate').textContent = dateInput;
+
+            // Ocultar pantalla de fecha
+            document.getElementById('dateScreen').classList.add('hidden');
+
+            // Mostrar animación de flores
+            document.getElementById('flowerAnimation').classList.add('active');
+
+            // Mostrar carta después de la animación
+            setTimeout(() => {
+                document.getElementById('loveLetter').classList.add('active');
+            }, 3000);
+        }
+
+        // Cerrar carta
+        function closeLetter() {
+            document.getElementById('loveLetter').classList.remove('active');
+            document.getElementById('flowerAnimation').classList.remove('active');
+            document.getElementById('dateScreen').classList.remove('hidden');
+            document.getElementById('dateInput').value = '';
+        }
+
+        // Permitir Enter para enviar
+        document.addEventListener('DOMContentLoaded', function() {
+            createHearts();
+            
+            document.getElementById('dateInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    showFlowers();
+                }
+            });
+
+            // Intentar reproducir música (algunos navegadores lo bloquean)
+            const audio = document.getElementById('backgroundMusic');
+            audio.volume = 0.3;
+            
+            // Reproducir al hacer clic en cualquier parte
+            document.addEventListener('click', function() {
+                audio.play().catch(e => console.log('Autoplay bloqueado'));
+            }, { once: true });
+        });
+    </script>
+</body>
+</html>
